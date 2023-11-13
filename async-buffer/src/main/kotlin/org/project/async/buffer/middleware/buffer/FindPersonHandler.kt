@@ -12,6 +12,6 @@ class FindPersonHandler : BufferHandler() {
     }
 
     override fun isInvalid(item: Person): Boolean {
-        return item.id <= 0L
+        return item.id == null || item.id <= 0L
     }
 }

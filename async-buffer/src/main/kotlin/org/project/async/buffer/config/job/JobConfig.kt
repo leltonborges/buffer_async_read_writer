@@ -1,7 +1,9 @@
 package org.project.async.buffer.config.job
 
 import org.project.async.buffer.core.common.Constants
+import org.project.async.buffer.core.enums.PersonFixed
 import org.project.async.buffer.core.pattern.dto.PersonDTO
+import org.project.async.buffer.core.pattern.vo.PersonVO
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor
 import org.springframework.batch.item.file.transform.FieldExtractor
 import org.springframework.batch.item.file.transform.FormatterLineAggregator
@@ -30,19 +32,19 @@ class JobConfig {
 
     @Bean("lineAggregatorFixed")
     fun lineAggregatorFixed(
-        @Qualifier("fieldExtractorPersonFixed") fieldExtractor: FieldExtractor<PersonDTO>,
-    ): LineAggregator<PersonDTO> {
-        val lineAggregator = FormatterLineAggregator<PersonDTO>().apply {
+        @Qualifier("fieldExtractorPersonFixed") fieldExtractor: FieldExtractor<PersonVO>,
+    ): LineAggregator<PersonVO> {
+        val lineAggregator = FormatterLineAggregator<PersonVO>().apply {
             setFieldExtractor(fieldExtractor)
-            setFormat(Constants.FORMAT_FIELD_FIXED_FILE)
+            setFormat(PersonFixed.fieldFormatted())
         }
         return lineAggregator;
     }
 
     @Bean("fieldExtractorPersonFixed")
-    fun fieldExtractorPerson(): FieldExtractor<PersonDTO> {
-        val fieldExtractor = BeanWrapperFieldExtractor<PersonDTO>()
-        fieldExtractor.setNames(Constants.PERSON_NAMES_FILE)
+    fun fieldExtractorPerson(): FieldExtractor<PersonVO> {
+        val fieldExtractor = BeanWrapperFieldExtractor<PersonVO>()
+        fieldExtractor.setNames(PersonFixed.fieldNames())
         return fieldExtractor
     }
 }

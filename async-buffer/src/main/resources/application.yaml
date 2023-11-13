@@ -60,3 +60,7 @@ buffer:
   root:
     path: ${ROOT_PATH:/home/lelton/tmp/buffer}
 
+thread:
+  core: 5
+  max: 10
+  capacity: 30

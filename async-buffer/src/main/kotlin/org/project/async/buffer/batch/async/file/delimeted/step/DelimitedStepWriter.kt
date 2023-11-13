@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.springframework.util.StopWatch
 
-@Component("delimitedStepWriterBuffer")
 @StepScope
+@Component("delimitedStepWriterBuffer")
 class DelimitedStepWriter(
-    @Qualifier("syncItemStreamWriterDelimited") val itemStreamWriter: SynchronizedItemStreamWriter<PersonDTO>,
+    @Qualifier("syncItemStreamWriterDelimited") private val itemStreamWriter: SynchronizedItemStreamWriter<PersonDTO>,
 ): AbstractItemWriterStep<PersonDTO>() {
 
     @PostConstruct

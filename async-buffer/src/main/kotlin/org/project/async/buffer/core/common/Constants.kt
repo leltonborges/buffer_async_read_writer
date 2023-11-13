@@ -1,8 +1,6 @@
 package org.project.async.buffer.core.common
 
 object Constants {
-    @JvmStatic
-    val PROCESS_DATE: String = "processDate"
 
     @JvmStatic
     val PERSON_NAMES_FILE = arrayOf("name",
@@ -11,7 +9,7 @@ object Constants {
                                     "age",
                                     "login.login",
                                     "login.password",
-                                    "login.dtLasUpdatePass",
+                                    "login.dtLastUpdatePass",
                                     "login.dtLastAcess",
                                     "login.dtCreatedAt")
 

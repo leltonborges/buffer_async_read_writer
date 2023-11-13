@@ -18,20 +18,14 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping(path = ["/buffer"],
                 produces = [APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE],
                 consumes = [APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE])
-class BufferAsyncDelimitedResource(
+class BufferAsyncFileDelimitedResource(
     @Qualifier("jobFileDelimited") private val job: Job,
     jobLauncher: JobLauncher,
 ) : JobAbstractController(job, jobLauncher) {
 
     @Tag(name = "async")
-    @PostMapping(path = ["/async/reader/bd"])
-    fun asyncBufferReaderDB(): ResponseEntity<JobInstance> {
-        return executeJob(convertToJobParameters())
-    }
-
-    @Tag(name = "async")
     @Tag(name = "fileDelimited")
-    @PostMapping(path = ["/async/writer/file/delimited"], consumes = [APPLICATION_JSON_VALUE])
+    @PostMapping(path = ["/async/writer/file/delimited"])
     @Tag(name = "OK")
     fun asyncBufferReaderFileDelimited(
         @RequestBody fileInfo: FileInfo,

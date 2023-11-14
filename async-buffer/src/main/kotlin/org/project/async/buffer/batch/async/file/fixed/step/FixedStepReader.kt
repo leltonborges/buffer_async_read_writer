@@ -9,8 +9,8 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
 
-@Component("fixedStepReader")
 @StepScope
+@Component("fixedStepReader")
 class FixedStepReader(
     private val bufferHandle: BufferConfigHandler
 ) : ItemReaderPage<PersonDTO>() {

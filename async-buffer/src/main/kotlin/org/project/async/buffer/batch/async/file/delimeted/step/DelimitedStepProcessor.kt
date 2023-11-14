@@ -5,8 +5,8 @@ import org.springframework.batch.core.configuration.annotation.StepScope
 import org.springframework.batch.item.ItemProcessor
 import org.springframework.stereotype.Component
 
-@Component("delimitedStepProcessorBuffer")
 @StepScope
+@Component("delimitedStepProcessorBuffer")
 class DelimitedStepProcessor : ItemProcessor<PersonDTO, PersonDTO> {
 
     override fun process(item: PersonDTO): PersonDTO? {

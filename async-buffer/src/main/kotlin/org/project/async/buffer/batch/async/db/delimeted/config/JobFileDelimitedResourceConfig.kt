@@ -24,7 +24,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.transaction.PlatformTransactionManager
 import java.util.concurrent.Future
 
-
 @Configuration
 class JobFileDelimitedResourceConfig : JobAbstract() {
 

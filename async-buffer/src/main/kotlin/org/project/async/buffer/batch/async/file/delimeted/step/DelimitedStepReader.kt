@@ -9,8 +9,8 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
 
-@Component("delimitedStepReaderBuffer")
 @StepScope
+@Component("delimitedStepReaderBuffer")
 class DelimitedStepReader(
     private val bufferHandle: BufferConfigHandler
 ) : ItemReaderPage<PersonDTO>() {

@@ -22,7 +22,6 @@ class DelimitedStepWriter(
     @PostConstruct
     fun init(){
         this.itemStreamWriter.open(ExecutionContext())
-//        this.itemStreamWriter.open(stepExecution.executionContext)
     }
 
     override fun write(chunk: Chunk<out PersonDTO>) {

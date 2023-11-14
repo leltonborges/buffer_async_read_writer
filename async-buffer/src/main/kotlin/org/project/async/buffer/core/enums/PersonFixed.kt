@@ -26,8 +26,8 @@ enum class PersonFixed(val field: String, val format: String, val range: Range) 
         else throw NumberFormatException("Numero numero extenso: $value")
     }
 
-    fun processField(value: LocalDateTime, format: String): String {
-        val formattedDate = value.format(DateTimeFormatter.ofPattern(format))
+    fun processField(value: LocalDateTime, format: DateTimeFormatter): String {
+        val formattedDate = value.format(format)
         return processField(formattedDate)
     }
 

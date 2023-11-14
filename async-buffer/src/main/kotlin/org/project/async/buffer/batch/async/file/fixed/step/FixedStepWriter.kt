@@ -2,7 +2,6 @@ package org.project.async.buffer.batch.async.file.fixed.step
 
 import jakarta.annotation.PostConstruct
 import org.project.async.buffer.batch.AbstractItemWriterStep
-import org.project.async.buffer.core.pattern.dto.PersonDTO
 import org.project.async.buffer.core.pattern.vo.PersonVO
 import org.project.async.buffer.functional.logger
 import org.project.async.buffer.functional.loggerWriter
@@ -14,8 +13,8 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.springframework.util.StopWatch
 
-@Component("fixedStepWriter")
 @StepScope
+@Component("fixedStepWriter")
 class FixedStepWriter(
     @Qualifier("asyncItemStreamWriterFixed") val itemStreamWriter: SynchronizedItemStreamWriter<PersonVO>,
 ): AbstractItemWriterStep<PersonVO>() {

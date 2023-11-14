@@ -3,13 +3,14 @@ package org.project.async.buffer.batch.async.file.fixed.step
 import org.project.async.buffer.core.enums.PersonFixed
 import org.project.async.buffer.core.pattern.dto.PersonDTO
 import org.project.async.buffer.core.pattern.vo.PersonVO
+import org.project.async.buffer.core.utils.DateUtils
 import org.springframework.batch.core.configuration.annotation.StepScope
 import org.springframework.batch.item.ItemProcessor
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
-@Component("fixedStepProcessor")
 @StepScope
+@Component("fixedStepProcessor")
 class FixedStepProcessor : ItemProcessor<PersonDTO, PersonVO> {
 
     override fun process(item: PersonDTO): PersonVO? {
@@ -17,16 +18,17 @@ class FixedStepProcessor : ItemProcessor<PersonDTO, PersonVO> {
     }
 
     private fun processItem(item: PersonDTO): PersonVO {
-        return PersonVO(formatName(item.name),
-                        formatDocument(item.document),
-                        formatDocumentType(item.typeDocument),
-                        formatAge(item.age),
-                        formatLogin(item.login.login),
-                        formatPassword(item.login.password),
-                        item.login.dtLastUpdatePass?.let { formatDate(it) },
-                        item.login.dtLastAcess?.let { formatDate(it) },
-                        item.login.dtCreatedAt?.let { formatDate(it) },
-                        )
+        return PersonVO(
+                formatName(item.name),
+                formatDocument(item.document),
+                formatDocumentType(item.typeDocument),
+                formatAge(item.age),
+                formatLogin(item.login.login),
+                formatPassword(item.login.password),
+                item.login.dtLastUpdatePass,
+                item.login.dtLastAcess,
+                item.login.dtCreatedAt,
+        )
     }
 
     private fun formatName(name: String) = PersonFixed.NAME.processField(name)
@@ -41,7 +43,7 @@ class FixedStepProcessor : ItemProcessor<PersonDTO, PersonVO> {
 
     private fun formatPassword(password: String) = PersonFixed.PASSWORD.processField(password)
 
-    private fun formatDate(time: LocalDateTime) = PersonFixed.DT_LAST_UPDATE.processField(time, "yyyyMMdd")
+    private fun formatDate(time: LocalDateTime) = PersonFixed.DT_LAST_UPDATE.processField(time, DateUtils.formatted)
 
     companion object {
         @JvmStatic

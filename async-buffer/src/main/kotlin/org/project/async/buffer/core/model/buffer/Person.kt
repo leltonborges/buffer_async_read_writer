@@ -6,9 +6,14 @@ import java.io.Serializable
 
 @Entity
 @Table(name = "TB_PERSON", schema = "buffer")
+@SequenceGenerator(name = "seqPersonGen",
+                   schema = "buffer",
+                   sequenceName = "SEQ_TB_PERSON",
+                   allocationSize = 1,
+                   initialValue = 1)
 class Person(
         @field:Id
-        @field:GeneratedValue(strategy = GenerationType.IDENTITY)
+        @field:GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqPersonGen")
         @field:Column(name = "SEQ_PERSON")
         val id: Long?,
 
@@ -24,9 +29,9 @@ class Person(
         @field:Column(name = "CD_AGE", nullable = false)
         val age: Int,
 
-        @OneToOne(fetch = FetchType.LAZY)
+        @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.DETACH])
         @JoinColumn(name = "SEQ_PERSON", referencedColumnName = "CD_SEQ_PERSON")
-        val login: Login,
+        var login: Login?,
 ) : Serializable {
 
     constructor(dto: PersonDTO) : this(null, dto.name, dto.document, dto.typeDocument, dto.age, Login(dto.login))

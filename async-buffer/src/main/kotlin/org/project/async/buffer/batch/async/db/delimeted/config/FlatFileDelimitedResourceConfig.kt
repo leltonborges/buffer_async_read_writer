@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.core.io.FileSystemResource
 import org.springframework.stereotype.Component
+import java.io.File
+import java.util.regex.Matcher
 
 
 @JobScope
@@ -27,11 +29,10 @@ class FlatFileDelimitedResourceConfig {
     @Value("\${buffer.root.path}")
     private lateinit var pathRoot: String
 
-
     @Bean
     @StepScope
     fun itemReaderFlatFileDelimited(): FlatFileItemReader<PersonDTO> {
-        val path = "$pathRoot/$path".replace(Regex("/{2,}"), "/")
+        val path = "$pathRoot/$path".replace(Regex("[/\\\\]"), Matcher.quoteReplacement(File.separator))
         val resource = FileSystemResource(path)
         return FlatFileItemReaderBuilder<PersonDTO>()
                 .name("itemReaderFlatFileDelimited")

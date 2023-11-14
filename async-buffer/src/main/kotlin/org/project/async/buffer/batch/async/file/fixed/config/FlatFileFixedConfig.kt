@@ -1,6 +1,5 @@
 package org.project.async.buffer.batch.async.file.fixed.config
 
-import org.project.async.buffer.core.pattern.dto.PersonDTO
 import org.project.async.buffer.core.pattern.vo.PersonVO
 import org.springframework.batch.core.configuration.annotation.JobScope
 import org.springframework.batch.core.configuration.annotation.StepScope
@@ -8,7 +7,6 @@ import org.springframework.batch.item.file.FlatFileFooterCallback
 import org.springframework.batch.item.file.FlatFileHeaderCallback
 import org.springframework.batch.item.file.FlatFileItemWriter
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder
-import org.springframework.batch.item.file.transform.FieldExtractor
 import org.springframework.batch.item.file.transform.LineAggregator
 import org.springframework.batch.item.support.SynchronizedItemStreamWriter
 import org.springframework.batch.item.support.builder.SynchronizedItemStreamWriterBuilder

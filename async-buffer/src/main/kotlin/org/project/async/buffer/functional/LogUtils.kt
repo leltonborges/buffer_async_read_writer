@@ -8,6 +8,10 @@ inline fun <reified T> T.logger(): Logger {
     return LoggerFactory.getLogger(T::class.java)
 }
 
-fun loggerWriter(stopWatch: StopWatch, size: Int, logger: Logger) {
-    logger.logger().info("WRITER: $size REGISTRE IN ${stopWatch.totalTimeMillis} MS")
+inline fun <reified T> T.logger(name: String): Logger {
+    return LoggerFactory.getLogger(name)
+}
+
+fun logInfoWriter(stopWatch: StopWatch, size: Int, logger: Logger) {
+    logger.info("WRITER: $size REGISTRE IN ${stopWatch.totalTimeMillis} MS")
 }

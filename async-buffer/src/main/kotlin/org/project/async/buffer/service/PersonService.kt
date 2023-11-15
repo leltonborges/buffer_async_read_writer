@@ -22,7 +22,6 @@ class PersonService(
         } else {
             typesDocument.toSet()
         }
-
         return personRepository.findByTypeDocument(types, pageable)
     }
 
@@ -36,6 +35,6 @@ class PersonService(
                 it.id = persist.id
                 this.longService.save(it)
             }
-        }
+         }
     }
 }

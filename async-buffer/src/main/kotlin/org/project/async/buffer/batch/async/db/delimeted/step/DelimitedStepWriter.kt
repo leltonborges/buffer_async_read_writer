@@ -3,7 +3,7 @@ package org.project.async.buffer.batch.async.db.delimeted.step
 import org.project.async.buffer.batch.AbstractItemWriterStep
 import org.project.async.buffer.core.model.buffer.Person
 import org.project.async.buffer.functional.logger
-import org.project.async.buffer.functional.loggerWriter
+import org.project.async.buffer.functional.logInfoWriter
 import org.project.async.buffer.service.PersonService
 import org.springframework.batch.core.configuration.annotation.StepScope
 import org.springframework.batch.item.Chunk
@@ -21,6 +21,6 @@ class DelimitedStepWriter(
         stopWatch.start()
         this.personService.saveAllAndFlush(chunk.items)
         stopWatch.stop()
-        loggerWriter(stopWatch, chunk.size(), this.logger())
+        logInfoWriter(stopWatch, chunk.size(), this.logger("itemWriterFlatFileDelimited"))
     }
 }

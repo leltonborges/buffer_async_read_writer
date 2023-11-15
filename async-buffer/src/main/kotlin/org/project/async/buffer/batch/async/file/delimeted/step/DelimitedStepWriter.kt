@@ -4,7 +4,7 @@ import jakarta.annotation.PostConstruct
 import org.project.async.buffer.batch.AbstractItemWriterStep
 import org.project.async.buffer.core.pattern.dto.PersonDTO
 import org.project.async.buffer.functional.logger
-import org.project.async.buffer.functional.loggerWriter
+import org.project.async.buffer.functional.logInfoWriter
 import org.springframework.batch.core.configuration.annotation.StepScope
 import org.springframework.batch.item.Chunk
 import org.springframework.batch.item.ExecutionContext
@@ -29,6 +29,6 @@ class DelimitedStepWriter(
         stopWatch.start()
         this.itemStreamWriter.write(chunk)
         stopWatch.stop()
-        loggerWriter(stopWatch, chunk.size(), this.logger())
+        logInfoWriter(stopWatch, chunk.size(), this.logger())
     }
 }

@@ -13,5 +13,5 @@ inline fun <reified T> T.logger(name: String): Logger {
 }
 
 fun logInfoWriter(stopWatch: StopWatch, size: Int, logger: Logger) {
-    logger.info("WRITER: $size REGISTRE IN ${stopWatch.totalTimeMillis} MS")
+    logger.info("WRITER: $size REGISTRE IN ${stopWatch.totalTimeSeconds} SEGUNDOS")
 }

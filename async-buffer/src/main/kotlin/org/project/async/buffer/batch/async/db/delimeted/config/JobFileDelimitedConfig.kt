@@ -55,7 +55,7 @@ class JobFileDelimitedConfig : JobAbstract() {
         header: FileDelimitedFooter,
     ): Step {
         return StepBuilder("STEP_ASYNC_BUFFER", jobRepository)
-                .chunk<Person, Future<PersonDTO>>(10, transactionManager)
+            .chunk<Person, Future<PersonDTO>>(this.chuckDefault, transactionManager)
                 .reader(itemReader)
                 .processor(itemProcessorBufferAsync(itemProcessor, threadProperties))
                 .writer(itemWriterBufferAsync(itemWriter))

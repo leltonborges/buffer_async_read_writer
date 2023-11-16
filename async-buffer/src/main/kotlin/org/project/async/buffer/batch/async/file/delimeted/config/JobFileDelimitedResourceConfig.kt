@@ -56,7 +56,7 @@ class JobFileDelimitedResourceConfig : JobAbstract() {
         jobRepository: JobRepository,
     ): Step {
         return StepBuilder("STEP_ASYNC_BUFFER_RESOURCE", jobRepository)
-                .chunk<PersonDTO, Future<Person>>(10, transactionManager)
+            .chunk<PersonDTO, Future<Person>>(this.chuckDefault, transactionManager)
                 .reader(itemReader)
                 .processor(itemProcessorBufferAsync(itemProcessor, threadProperties))
                 .writer(itemWriterBufferAsync(itemWriter))

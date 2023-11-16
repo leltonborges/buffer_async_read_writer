@@ -4,7 +4,6 @@ import org.project.async.buffer.batch.JobAbstract
 import org.project.async.buffer.batch.utils.BatchUtils
 import org.project.async.buffer.config.property.ThreadProperties
 import org.project.async.buffer.core.model.buffer.Person
-import org.project.async.buffer.core.pattern.dto.PersonDTO
 import org.project.async.buffer.core.pattern.vo.PersonVO
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.Step
@@ -57,7 +56,7 @@ class JobFileFixedDBConfig : JobAbstract() {
         jobRepository: JobRepository,
     ): Step {
         return StepBuilder("STEP_ASYNC_BUFFER_DB", jobRepository)
-                .chunk<PersonVO, Future<Person>>(10, transactionManager)
+            .chunk<PersonVO, Future<Person>>(this.chuckDefault, transactionManager)
                 .reader(itemReader)
                 .processor(itemProcessorBufferAsync(itemProcessor, threadProperties))
                 .writer(itemWriterBufferAsync(itemWriter))

@@ -27,22 +27,29 @@ class FlatFileDelimitedResourceConfig {
     @Value("#{jobParameters['filePath']}")
     private lateinit var path: String
 
+    @Value("#{jobParameters['fileName']}")
+    private lateinit var fileName: String
+
+    @Value("#{jobParameters['fileExtension']}")
+    private lateinit var fileExtension: String
+
     @Value("#{jobParameters['fileDelimiter']}")
-    private lateinit var delimiter: String
+    private lateinit var fileDelimiter: String
 
     @Value("\${buffer.root.path}")
     private lateinit var pathRoot: String
 
+
     @StepScope
     @Bean("stepAsyncDelimitedReaderDB")
     fun stepAsyncDelimitedReaderDB(): FlatFileItemReader<PersonDTO> {
-        val path = BatchUtils.mountPathFile(pathRoot, path)
-        val resource = FileSystemResource(path)
+        val fullPathFile = BatchUtils.mountPathFile(pathRoot, path, fileName, fileExtension)
+        val resource = FileSystemResource(fullPathFile)
         return FlatFileItemReaderBuilder<PersonDTO>()
             .name("itemReaderFlatFileDelimited")
             .resource(resource)
             .delimited()
-            .delimiter(delimiter)
+            .delimiter(fileDelimiter)
             .names(*Constants.PERSON_NAMES_FILE)
             .encoding(encoding)
             .targetType(PersonDTO::class.java)
@@ -65,7 +72,7 @@ class FlatFileDelimitedResourceConfig {
 
     private fun lineTokenizer(): LineTokenizer {
         val tokenizer = DelimitedLineTokenizer()
-        tokenizer.setDelimiter(delimiter)
+        tokenizer.setDelimiter(fileDelimiter)
         tokenizer.setNames(*Constants.PERSON_NAMES_FILE)
         return tokenizer
     }

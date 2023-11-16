@@ -7,7 +7,7 @@ spring:
   application:
     name: async-buffer
   profiles:
-    active: ${PROFILE_ACTIVE:dev}
+    active: ${PROFILE_ACTIVE}
 
   datasource:
     batch:

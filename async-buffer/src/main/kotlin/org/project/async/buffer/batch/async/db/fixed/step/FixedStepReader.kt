@@ -2,8 +2,7 @@ package org.project.async.buffer.batch.async.db.fixed.step
 
 import org.project.async.buffer.batch.ItemReaderPage
 import org.project.async.buffer.core.model.buffer.Person
-import org.project.async.buffer.core.pattern.dto.PersonDTO
-import org.project.async.buffer.middleware.buffer.config.BufferConfigHandler
+import org.project.async.buffer.service.PersonService
 import org.springframework.batch.core.configuration.annotation.StepScope
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Component
 @StepScope
 @Component("fixedStepReader")
 class FixedStepReader(
-    private val bufferHandle: BufferConfigHandler
+    private val personService: PersonService
 ) : ItemReaderPage<Person>() {
 
     override fun startPage(): Pageable {
@@ -21,6 +20,6 @@ class FixedStepReader(
     }
 
     override fun getData(pageable: Pageable): Page<Person> {
-        return this.bufferHandle.readerData(arrayOf(0), pageable)
+        return this.personService.findByTypeDocument(arrayOf(0), pageable)
     }
 }

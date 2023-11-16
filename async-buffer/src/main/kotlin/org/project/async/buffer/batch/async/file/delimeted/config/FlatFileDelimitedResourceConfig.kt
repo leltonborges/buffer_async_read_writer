@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.core.io.FileSystemResource
 import org.springframework.stereotype.Component
 
-
 @JobScope
 @Component
 class FlatFileDelimitedResourceConfig {

@@ -1,4 +1,4 @@
-package org.project.async.buffer.batch.async.file.fixed.config
+package org.project.async.buffer.batch.async.db.delimeted.config
 
 import org.project.async.buffer.core.pattern.dto.PersonDTO
 import org.springframework.batch.core.annotation.AfterWrite
@@ -10,7 +10,7 @@ import java.io.Writer
 
 @Component
 @JobScope
-class FileFixedFooter : FlatFileFooterCallback {
+class FileDelimitedFooter : FlatFileFooterCallback {
     private var counter = 0
 
     override fun writeFooter(writer: Writer) {

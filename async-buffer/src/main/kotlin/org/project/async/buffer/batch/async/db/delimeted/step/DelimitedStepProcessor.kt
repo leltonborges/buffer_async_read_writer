@@ -1,33 +1,48 @@
-package org.project.async.buffer.batch.async.db.delimeted.step;
+package org.project.async.buffer.batch.async.db.delimeted.step
 
+import org.project.async.buffer.core.enums.PersonFixed
+import org.project.async.buffer.core.model.buffer.Login
 import org.project.async.buffer.core.model.buffer.Person
+import org.project.async.buffer.core.pattern.dto.LoginDTO
 import org.project.async.buffer.core.pattern.dto.PersonDTO
+import org.project.async.buffer.core.pattern.vo.PersonVO
+import org.project.async.buffer.core.utils.DateUtils
 import org.springframework.batch.core.configuration.annotation.StepScope
 import org.springframework.batch.item.ItemProcessor
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
 @StepScope
-@Component("itemProcessorFlatFileDelimited")
-class DelimitedStepProcessor : ItemProcessor<PersonDTO, Person> {
+@Component("delimitedStepProcessorBuffer")
+class DelimitedStepProcessor : ItemProcessor<Person, PersonDTO> {
 
-    override fun process(item: PersonDTO): Person? {
-        return if (isInvalid(item)) null
-        else processItem(item);
+    override fun process(item: Person): PersonDTO? {
+        return if (item.isValid()) item.toPersonDTO() else null
     }
+
+    private fun Person.toPersonDTO() = PersonDTO(
+        name = name,
+        document = document,
+        typeDocument = typeDocument,
+        age = age,
+        login = login?.toDTO() ?: LoginDTO()
+    )
+
+
+    private fun Login.toDTO() = LoginDTO(
+        login,
+        password,
+        dtLastUpdatePass = dtLastUpdatePass.formatString(),
+        dtLastAcess = dtLastAcess.formatString(),
+        dtCreatedAt = dtCreatedAt.formatString()
+    )
 
     companion object {
         @JvmStatic
-        private fun isInvalid(value: PersonDTO): Boolean {
-            var validation: Boolean;
-            with(value) {
-                validation = name.isBlank()
-                validation = document.isBlank()
-            }
-            return validation
-        }
-    }
+        private fun LocalDateTime?.formatString(): String = this?.let { DateUtils.formattedProcess.format(it) } ?: ""
 
-    private fun processItem(item: PersonDTO): Person {
-        return Person(item);
+        @JvmStatic
+
+        private fun Person.isValid() = name.isNotBlank() && document.isNotBlank()
     }
 }

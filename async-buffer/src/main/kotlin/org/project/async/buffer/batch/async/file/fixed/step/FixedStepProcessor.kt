@@ -1,54 +1,42 @@
-package org.project.async.buffer.batch.async.file.fixed.step
+package org.project.async.buffer.batch.async.file.fixed.step;
 
-import org.project.async.buffer.core.enums.PersonFixed
-import org.project.async.buffer.core.pattern.dto.PersonDTO
+import org.project.async.buffer.core.model.buffer.Login
+import org.project.async.buffer.core.model.buffer.Person
 import org.project.async.buffer.core.pattern.vo.PersonVO
 import org.project.async.buffer.core.utils.DateUtils
 import org.springframework.batch.core.configuration.annotation.StepScope
 import org.springframework.batch.item.ItemProcessor
 import org.springframework.stereotype.Component
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.Date
 
 @StepScope
-@Component("fixedStepProcessor")
-class FixedStepProcessor : ItemProcessor<PersonDTO, PersonVO> {
+@Component("fixedStepProcessorDB")
+class FixedStepProcessor : ItemProcessor<PersonVO, Person> {
 
-    override fun process(item: PersonDTO): PersonVO? {
-        return if (isInvalid(item)) null else processItem(item)
-    }
+    override fun process(item: PersonVO): Person? = if (item.isValid()) item.toPerson() else null
+    private fun PersonVO.isValid() = name.isNotBlank() && document.isNotBlank() && typeDocument != 0
 
-    private fun processItem(item: PersonDTO): PersonVO {
-        return PersonVO(
-                formatName(item.name),
-                formatDocument(item.document),
-                formatDocumentType(item.typeDocument),
-                formatAge(item.age),
-                formatLogin(item.login.login),
-                formatPassword(item.login.password),
-                item.login.dtLastUpdatePass,
-                item.login.dtLastAcess,
-                item.login.dtCreatedAt,
+    private fun PersonVO.toPerson() = Person(
+        id = null,
+        name = name,
+        document = document,
+        typeDocument = typeDocument,
+        age = age,
+        login = this.toLogin()
+    )
+
+    private fun PersonVO.toLogin(): Login? = if (this.login.isNotBlank()) {
+        Login(
+            id = null,
+            login = this.login,
+            password = this.password,
+            dtLastUpdatePass = this.dtLasUpdatePass.toLocalDateTime(),
+            dtLastAcess = this.dtLastAcess.toLocalDateTime(),
+            dtCreatedAt = this.dtCreatedAt.toLocalDateTime()
         )
-    }
+    } else null
 
-    private fun formatName(name: String) = PersonFixed.NAME.processField(name)
-
-    private fun formatDocument(document: String) = PersonFixed.DOCUMENT.processField(document)
-
-    private fun formatAge(age: Int) = PersonFixed.AGE.processField(age)
-
-    private fun formatDocumentType(type: Int) = PersonFixed.DOCUMENT_TYPE.processField(type)
-
-    private fun formatLogin(login: String) = PersonFixed.LOGIN.processField(login)
-
-    private fun formatPassword(password: String) = PersonFixed.PASSWORD.processField(password)
-
-    private fun formatDate(time: LocalDateTime) = PersonFixed.DT_LAST_UPDATE.processField(time, DateUtils.formatted)
-
-    companion object {
-        @JvmStatic
-        private fun isInvalid(value: PersonDTO): Boolean {
-            return value.name.isBlank() || value.document.isBlank()
-        }
-    }
+    private fun String?.toLocalDateTime() = this?.let { DateUtils.convertDateFixed(it) }
 }

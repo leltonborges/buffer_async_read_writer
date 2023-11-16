@@ -3,11 +3,11 @@ package org.project.async.buffer.batch.async.file.delimeted.config
 import org.project.async.buffer.batch.JobAbstract
 import org.project.async.buffer.batch.utils.BatchUtils
 import org.project.async.buffer.config.property.ThreadProperties
+import org.project.async.buffer.core.model.buffer.Person
 import org.project.async.buffer.core.pattern.dto.PersonDTO
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.Step
 import org.springframework.batch.core.configuration.annotation.JobScope
-import org.springframework.batch.core.configuration.annotation.StepScope
 import org.springframework.batch.core.job.builder.JobBuilder
 import org.springframework.batch.core.launch.support.RunIdIncrementer
 import org.springframework.batch.core.repository.JobRepository
@@ -24,54 +24,53 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.transaction.PlatformTransactionManager
 import java.util.concurrent.Future
 
-
 @Configuration
-class JobFileDelimitedConfig : JobAbstract() {
+class JobFileDelimitedResourceConfig : JobAbstract() {
 
-    @Bean("jobFileDelimited")
+    @Bean("jobFileDelimitedDB")
     fun jobBufferAsync(
         jobRepository: JobRepository,
-        @Qualifier("stepBufferAsync")
+        @Qualifier("stepAsyncDelimitedDB")
         step: Step,
     ): Job {
-        return JobBuilder("JOB_ASYNC_BUFFER", jobRepository)
+        return JobBuilder("JOB_ASYNC_BUFFER_RESOURCE", jobRepository)
                 .start(step)
-                .incrementer(RunIdIncrementer()) //            .incrementer(jobParametersIncrementer())
+                .incrementer(RunIdIncrementer())
                 .build()
     }
 
-    @Bean("stepBufferAsync")
+    @Bean("stepAsyncDelimitedDB")
     @JobScope
-    fun stepBufferAsync(
-        @Qualifier("delimitedStepReaderBuffer")
+    fun stepBufferAsyncResource(
+        @Qualifier("stepAsyncDelimitedReaderDB")
         itemReader: ItemReader<PersonDTO>,
-        @Qualifier("delimitedStepProcessorBuffer")
-        itemProcessor: ItemProcessor<PersonDTO, PersonDTO>,
-        @Qualifier("delimitedStepWriterBuffer")
-        itemWriter: ItemWriter<PersonDTO>,
+        @Qualifier("stepAsyncDelimitedProcessorDB")
+        itemProcessor: ItemProcessor<PersonDTO, Person>,
+        @Qualifier("stepAsyncDelimitedWriterDB")
+        itemWriter: ItemWriter<Person>,
         @Qualifier("batchTransactionManager")
         transactionManager: PlatformTransactionManager,
-        jobRepository: JobRepository,
+        @Qualifier("taskExecutor")
+        threadPoolTaskExecutor: ThreadPoolTaskExecutor,
         threadProperties: ThreadProperties,
-        header: FileDelimitedFooter,
+        jobRepository: JobRepository,
     ): Step {
-        return StepBuilder("STEP_ASYNC_BUFFER", jobRepository)
-                .chunk<PersonDTO, Future<PersonDTO>>(10, transactionManager)
+        return StepBuilder("STEP_ASYNC_BUFFER_RESOURCE", jobRepository)
+                .chunk<PersonDTO, Future<Person>>(10, transactionManager)
                 .reader(itemReader)
                 .processor(itemProcessorBufferAsync(itemProcessor, threadProperties))
                 .writer(itemWriterBufferAsync(itemWriter))
-                .listener(header)
                 .build()
     }
 
     companion object {
         @JvmStatic
         private fun itemProcessorBufferAsync(
-            itemProcessor: ItemProcessor<PersonDTO, PersonDTO>,
+            itemProcessor: ItemProcessor<PersonDTO, Person>,
             threadProperties: ThreadProperties,
-            namePrefix: String = "t-async-P-",
-        ): ItemProcessor<PersonDTO, Future<PersonDTO>> {
-            val asyncItemProcessor = AsyncItemProcessor<PersonDTO, PersonDTO>()
+            namePrefix: String = "t-async-P-"
+        ): ItemProcessor<PersonDTO, Future<Person>> {
+            val asyncItemProcessor = AsyncItemProcessor<PersonDTO, Person>()
             val taskExecutor = BatchUtils.asyncExecutorProcessor(threadProperties, namePrefix)
             asyncItemProcessor.setTaskExecutor(taskExecutor)
             asyncItemProcessor.setDelegate(itemProcessor)
@@ -80,9 +79,9 @@ class JobFileDelimitedConfig : JobAbstract() {
 
         @JvmStatic
         private fun itemWriterBufferAsync(
-            itemWriter: ItemWriter<PersonDTO>,
-        ): ItemWriter<Future<PersonDTO>> {
-            val asyncItemWriter = AsyncItemWriter<PersonDTO>()
+            itemWriter: ItemWriter<Person>,
+        ): ItemWriter<Future<Person>> {
+            val asyncItemWriter = AsyncItemWriter<Person>()
             asyncItemWriter.setDelegate(itemWriter)
             return asyncItemWriter
         }

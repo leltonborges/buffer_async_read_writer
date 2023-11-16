@@ -38,8 +38,28 @@ enum class PersonFixed(val field: String, val format: String, val range: Range) 
         }
 
         @JvmStatic
+        fun fieldRanges(): Array<Range> {
+            return PersonFixed.values().map { it.range }.toTypedArray();
+        }
+
+        @JvmStatic
         fun fieldFormatted(): String {
             return values().joinToString(separator = "") { it.format }
+        }
+
+        @JvmStatic
+        fun joinValues(separator: String = ";"): String {
+            return PersonFixed.values().joinToString(separator) { formatFieldForHeader(it) }
+        }
+
+        @JvmStatic
+        private fun formatFieldForHeader(field: PersonFixed): String {
+            val formattedField = String.format(field.format.replace("d", "s"), field.field)
+            return if (formattedField.length > field.range.size()) {
+                formattedField.substring(0, field.range.size())
+            } else {
+                formattedField.padEnd(field.range.size())
+            }
         }
     }
 }

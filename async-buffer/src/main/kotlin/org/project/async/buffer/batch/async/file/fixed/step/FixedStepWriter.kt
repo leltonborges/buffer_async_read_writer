@@ -1,34 +1,26 @@
 package org.project.async.buffer.batch.async.file.fixed.step
 
-import jakarta.annotation.PostConstruct
 import org.project.async.buffer.batch.AbstractItemWriterStep
-import org.project.async.buffer.core.pattern.vo.PersonVO
+import org.project.async.buffer.core.model.buffer.Person
 import org.project.async.buffer.functional.logger
 import org.project.async.buffer.functional.logInfoWriter
+import org.project.async.buffer.service.PersonService
 import org.springframework.batch.core.configuration.annotation.StepScope
 import org.springframework.batch.item.Chunk
-import org.springframework.batch.item.ExecutionContext
-import org.springframework.batch.item.support.SynchronizedItemStreamWriter
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.springframework.util.StopWatch
 
 @StepScope
-@Component("fixedStepWriter")
+@Component("fixedStepWriterDB")
 class FixedStepWriter(
-    @Qualifier("asyncItemStreamWriterFixed") val itemStreamWriter: SynchronizedItemStreamWriter<PersonVO>,
-): AbstractItemWriterStep<PersonVO>() {
+    private val personService: PersonService
+): AbstractItemWriterStep<Person>() {
 
-    @PostConstruct
-    fun init(){
-        this.itemStreamWriter.open(ExecutionContext())
-    }
-
-    override fun write(chunk: Chunk<out PersonVO>) {
+    override fun write(chunk: Chunk<out Person>) {
         val stopWatch = StopWatch()
         stopWatch.start()
-        this.itemStreamWriter.write(chunk)
+        this.personService.saveAllAndFlush(chunk.items)
         stopWatch.stop()
-        logInfoWriter(stopWatch, chunk.size(), this.logger())
+        logInfoWriter(stopWatch, chunk.size(), this.logger("fixedStepWriter"))
     }
 }

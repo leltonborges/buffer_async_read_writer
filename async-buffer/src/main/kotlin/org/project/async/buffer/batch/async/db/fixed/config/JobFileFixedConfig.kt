@@ -1,8 +1,9 @@
-package org.project.async.buffer.batch.async.file.fixed.config
+package org.project.async.buffer.batch.async.db.fixed.config
 
 import org.project.async.buffer.batch.JobAbstract
 import org.project.async.buffer.batch.utils.BatchUtils
 import org.project.async.buffer.config.property.ThreadProperties
+import org.project.async.buffer.core.model.buffer.Person
 import org.project.async.buffer.core.pattern.dto.PersonDTO
 import org.project.async.buffer.core.pattern.vo.PersonVO
 import org.springframework.batch.core.Job
@@ -40,9 +41,9 @@ class JobFileFixedConfig : JobAbstract() {
     @Bean("stepBufferFileFixedAsync")
     fun stepBufferAsync(
         @Qualifier("fixedStepReader")
-        itemReader: ItemReader<PersonDTO>,
+        itemReader: ItemReader<Person>,
         @Qualifier("fixedStepProcessor")
-        itemProcessor: ItemProcessor<PersonDTO, PersonVO>,
+        itemProcessor: ItemProcessor<Person, PersonVO>,
         @Qualifier("fixedStepWriter")
         itemWriter: ItemWriter<PersonVO>,
         @Qualifier("batchTransactionManager")
@@ -52,7 +53,7 @@ class JobFileFixedConfig : JobAbstract() {
         header: FileFixedFooter,
     ): Step {
         return StepBuilder("STEP_ASYNC_BUFFER_FIXED", jobRepository)
-                .chunk<PersonDTO, Future<PersonVO>>(10, transactionManager)
+                .chunk<Person, Future<PersonVO>>(10, transactionManager)
                 .reader(itemReader)
                 .processor(itemProcessorFixedAsync(itemProcessor, threadProperties))
                 .writer(itemWriterFixedAsync(itemWriter))
@@ -63,11 +64,11 @@ class JobFileFixedConfig : JobAbstract() {
     companion object {
         @JvmStatic
         private fun itemProcessorFixedAsync(
-            itemProcessor: ItemProcessor<PersonDTO, PersonVO>,
+            itemProcessor: ItemProcessor<Person, PersonVO>,
             threadProperties: ThreadProperties,
             namePrefix: String = "t-async-P-",
-        ): ItemProcessor<PersonDTO, Future<PersonVO>> {
-            val asyncItemProcessor = AsyncItemProcessor<PersonDTO, PersonVO>()
+        ): ItemProcessor<Person, Future<PersonVO>> {
+            val asyncItemProcessor = AsyncItemProcessor<Person, PersonVO>()
             val taskExecutor = BatchUtils.asyncExecutorProcessor(threadProperties, namePrefix)
             asyncItemProcessor.setTaskExecutor(taskExecutor)
             asyncItemProcessor.setDelegate(itemProcessor)

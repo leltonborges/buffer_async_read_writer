@@ -1,6 +1,8 @@
 package org.project.async.buffer.config.controller
 
-import org.project.async.buffer.core.pattern.vo.FileInfo
+import org.project.async.buffer.core.common.FileInfo
+import org.project.async.buffer.core.pattern.vo.FileInfoDelimited
+import org.project.async.buffer.core.pattern.vo.FileInfoFixed
 import org.springframework.batch.core.*
 import org.springframework.batch.core.launch.JobLauncher
 import org.springframework.http.ResponseEntity
@@ -22,9 +24,13 @@ abstract class JobAbstractController(
     protected fun convertToJobParameters(fileInfo: FileInfo): JobParameters {
         val jobParametersBuilder = JobParametersBuilder()
         with(fileInfo) {
-            fileDelimiter.let { jobParametersBuilder.addString("fileDelimiter", it) }
+            if(this is FileInfoDelimited)
+                fileDelimiter.let { jobParametersBuilder.addString("fileDelimiter", it) }
+
             processDate.let { jobParametersBuilder.addLocalDate("processDate", it) }
             fileEncoding.let { jobParametersBuilder.addString("fileEncoding", it) }
+            fileName.let { jobParametersBuilder.addString("fileName", it) }
+            fileExtension.let { jobParametersBuilder.addString("fileExtension", it) }
             filePath.takeIf { it.isNotBlank() }
                     ?.let { jobParametersBuilder.addString("filePath", it) }
             jobParametersBuilder.addLong("unique", System.currentTimeMillis())

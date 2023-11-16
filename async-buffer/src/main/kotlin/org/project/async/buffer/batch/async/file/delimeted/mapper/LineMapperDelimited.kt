@@ -1,4 +1,4 @@
-package org.project.async.buffer.batch.async.db.delimeted.mapper
+package org.project.async.buffer.batch.async.file.delimeted.mapper
 
 import org.project.async.buffer.core.common.Constants
 import org.project.async.buffer.core.pattern.dto.PersonDTO

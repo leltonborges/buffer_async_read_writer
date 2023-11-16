@@ -1,7 +1,9 @@
-package org.project.async.buffer.batch.async.file.delimeted.config
+package org.project.async.buffer.batch.async.db.delimeted.config
 
+import org.project.async.buffer.batch.utils.BatchUtils
 import org.project.async.buffer.core.common.Constants.PERSON_NAMES_FILE
 import org.project.async.buffer.core.pattern.dto.PersonDTO
+import org.springframework.batch.core.configuration.annotation.JobScope
 import org.springframework.batch.core.configuration.annotation.StepScope
 import org.springframework.batch.item.file.FlatFileFooterCallback
 import org.springframework.batch.item.file.FlatFileHeaderCallback
@@ -14,37 +16,50 @@ import org.springframework.batch.item.support.builder.SynchronizedItemStreamWrit
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.FileSystemResource
+import org.springframework.stereotype.Component
 
-@Configuration
+@Component
+@JobScope
 class FlatFileDelimitedConfig {
+
+    @Value("#{jobParameters['fileEncoding']}")
+    private lateinit var encoding: String
+
+    @Value("#{jobParameters['filePath']}")
+    private lateinit var path: String
+
+    @Value("#{jobParameters['fileName']}")
+    private lateinit var fileName: String
+
+    @Value("#{jobParameters['fileExtension']}")
+    private lateinit var fileExtension: String
+
+    @Value("#{jobParameters['fileDelimiter']}")
+    private lateinit var fileDelimiter: String
+
+    @Value("\${buffer.root.path}")
+    private lateinit var pathRoot: String
 
     @Bean("flatFileWriterPersonDelimited")
     @StepScope
     fun flatFileWriterPerson(
         @Qualifier("fieldExtractorPersonDelimited") fieldExtractor: FieldExtractor<PersonDTO>,
         @Qualifier("fileDelimitedHeader") headerCallback: FlatFileHeaderCallback,
-        @Qualifier("fileDelimitedFooter") footerCallback: FlatFileFooterCallback,
-        @Value("#{jobParameters['fileEncoding']}") encoding: String,
-        @Value("#{jobParameters['fileDelimiter']}") delimiter: String,
-        @Value("#{jobParameters['filePath']}") path: String,
-        @Value("\${buffer.root.path}") pathRoot: String,
+        @Qualifier("fileDelimitedFooter") footerCallback: FlatFileFooterCallback
     ): FlatFileItemWriter<PersonDTO> {
-        val pattern = Regex("/{2,}")
-        val fullPathFile = "${pathRoot}/$path/write-delimited-${System.currentTimeMillis()}.txt".replace(pattern, "/")
+        val fullPathFile = BatchUtils.mountPathFile(pathRoot, path, fileName, fileExtension, true)
         val resource = FileSystemResource(fullPathFile)
         return FlatFileItemWriterBuilder<PersonDTO>()
-                .name("FILE_WRITER_PERSON")
-                .resource(resource)
-                .headerCallback(headerCallback)
-                .footerCallback(footerCallback)
-                .encoding(encoding)
-                .delimited()
-                .delimiter(delimiter)
-                .fieldExtractor(fieldExtractor)
-//                .names(*NAMES_FILE_DEMILITED)
-                .build()
+            .name("FILE_WRITER_PERSON")
+            .resource(resource)
+            .headerCallback(headerCallback)
+            .footerCallback(footerCallback)
+            .encoding(encoding)
+            .delimited()
+            .delimiter(fileDelimiter)
+            .fieldExtractor(fieldExtractor)
+            .build()
     }
 
     @Bean("fieldExtractorPersonDelimited")
@@ -55,7 +70,9 @@ class FlatFileDelimitedConfig {
         return fieldExtractor
     }
 
-    @Bean("syncItemStreamWriterDelimited") @StepScope fun syncItemStreamWriter(
+    @Bean("syncItemStreamWriterDelimited")
+    @StepScope
+    fun syncItemStreamWriter(
         @Qualifier("flatFileWriterPersonDelimited") flatFileItemWriter: FlatFileItemWriter<PersonDTO>,
     ): SynchronizedItemStreamWriter<PersonDTO> {
         return SynchronizedItemStreamWriterBuilder<PersonDTO>().delegate(flatFileItemWriter).build();

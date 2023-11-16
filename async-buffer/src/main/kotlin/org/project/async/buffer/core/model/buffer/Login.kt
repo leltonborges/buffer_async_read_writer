@@ -21,13 +21,13 @@ class Login(
         @field:Column(name = "VL_PASSWORD", nullable = false)
         val password: String,
 
-        @field:Column(name = "DT_LAST_UPDATE_PASS", nullable = false)
+        @field:Column(name = "DT_LAST_UPDATE_PASS")
         val dtLastUpdatePass: LocalDateTime?,
 
-        @field:Column(name = "DT_LAST_ACCESS", nullable = false)
+        @field:Column(name = "DT_LAST_ACCESS")
         val dtLastAcess: LocalDateTime?,
 
-        @field:Column(name = "DT_CREATED_AT", nullable = false)
+        @field:Column(name = "DT_CREATED_AT")
         val dtCreatedAt: LocalDateTime?,
 ) {
     constructor(dto: LoginDTO) : this(null,

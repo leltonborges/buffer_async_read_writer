@@ -1,6 +1,7 @@
-package org.project.async.buffer.batch.async.db.delimeted.config
+package org.project.async.buffer.batch.async.file.delimeted.config
 
-import org.project.async.buffer.batch.async.db.delimeted.mapper.LineMapperDelimited
+import org.project.async.buffer.batch.async.file.delimeted.mapper.LineMapperDelimited
+import org.project.async.buffer.batch.utils.BatchUtils
 import org.project.async.buffer.core.common.Constants
 import org.project.async.buffer.core.pattern.dto.PersonDTO
 import org.springframework.batch.core.configuration.annotation.JobScope
@@ -15,8 +16,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.core.io.FileSystemResource
 import org.springframework.stereotype.Component
-import java.io.File
-import java.util.regex.Matcher
 
 
 @JobScope
@@ -34,10 +33,10 @@ class FlatFileDelimitedResourceConfig {
     @Value("\${buffer.root.path}")
     private lateinit var pathRoot: String
 
-    @Bean
     @StepScope
-    fun itemReaderFlatFileDelimited(): FlatFileItemReader<PersonDTO> {
-        val path = "$pathRoot/$path".replace(Regex("[/\\\\]"), Matcher.quoteReplacement(File.separator))
+    @Bean("stepAsyncDelimitedReaderDB")
+    fun stepAsyncDelimitedReaderDB(): FlatFileItemReader<PersonDTO> {
+        val path = BatchUtils.mountPathFile(pathRoot, path)
         val resource = FileSystemResource(path)
         return FlatFileItemReaderBuilder<PersonDTO>()
             .name("itemReaderFlatFileDelimited")

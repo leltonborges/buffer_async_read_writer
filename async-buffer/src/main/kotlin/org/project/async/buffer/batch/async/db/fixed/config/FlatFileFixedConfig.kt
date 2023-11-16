@@ -1,5 +1,6 @@
-package org.project.async.buffer.batch.async.file.fixed.config
+package org.project.async.buffer.batch.async.db.fixed.config
 
+import org.project.async.buffer.batch.utils.BatchUtils
 import org.project.async.buffer.core.pattern.vo.PersonVO
 import org.springframework.batch.core.configuration.annotation.JobScope
 import org.springframework.batch.core.configuration.annotation.StepScope
@@ -26,6 +27,12 @@ class FlatFileFixedConfig {
     @Value("#{jobParameters['filePath']}")
     private lateinit var path: String
 
+    @Value("#{jobParameters['fileName']}")
+    private lateinit var fileName: String
+
+    @Value("#{jobParameters['fileExtension']}")
+    private lateinit var fileExtension: String
+
     @Value("\${buffer.root.path}")
     private lateinit var pathRoot: String
 
@@ -36,8 +43,7 @@ class FlatFileFixedConfig {
         @Qualifier("fileFixedFooter") footerCallback: FlatFileFooterCallback,
         @Qualifier("lineAggregatorFixed") lineAggregator: LineAggregator<PersonVO>
     ): FlatFileItemWriter<PersonVO> {
-        val timeMillis = System.currentTimeMillis()
-        val path = "$pathRoot/$path/write-fixed-$timeMillis.txt".replace(Regex("/{2,}"), "/")
+        val path = BatchUtils.mountPathFile(pathRoot, path, fileName, fileExtension, true)
         val resource = FileSystemResource(path)
         return FlatFileItemWriterBuilder<PersonVO>()
                 .name("FILE_WRITER_PERSON")

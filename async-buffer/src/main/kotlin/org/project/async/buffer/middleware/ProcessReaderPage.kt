@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable
 
 
 abstract class ProcessReaderPage<T, R, V> {
-    fun readerData(item: V, pageable: Pageable): Page<R> {
+    open fun readerData(item: V, pageable: Pageable): Page<R> {
         val data = primarySearch(item, pageable)
         val handler = processHandler(data);
         return data.map { handler.processHandler(it) }

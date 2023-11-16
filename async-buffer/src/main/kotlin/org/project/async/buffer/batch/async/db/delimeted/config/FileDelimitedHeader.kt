@@ -1,4 +1,4 @@
-package org.project.async.buffer.batch.async.file.delimeted.config
+package org.project.async.buffer.batch.async.db.delimeted.config
 
 import org.project.async.buffer.core.common.Constants.PERSON_NAMES_FILE
 import org.springframework.batch.core.configuration.annotation.JobScope

@@ -1,6 +1,5 @@
 package org.project.async.buffer.core.common
 
-import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDate
 
 interface FileInfo {
@@ -12,6 +11,9 @@ interface FileInfo {
     val fileName: String
         get() = "default"
     val fileExtension: String
-        get() = "txt"
+        get() = ""
+
+    val separatorLine: String
+        get() = "0x0D"
 }
 

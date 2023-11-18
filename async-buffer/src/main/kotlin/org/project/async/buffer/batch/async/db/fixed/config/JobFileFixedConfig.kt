@@ -33,7 +33,10 @@ class JobFileFixedConfig : JobAbstract() {
         @Qualifier("stepBufferFileFixedAsync")
         step: Step,
     ): Job {
-        return JobBuilder("JOB_ASYNC_BUFFER_FIXED", jobRepository).start(step).incrementer(RunIdIncrementer()).build()
+        return JobBuilder("JOB_ASYNC_BUFFER_FIXED", jobRepository)
+            .start(step)
+            .incrementer(RunIdIncrementer())
+            .build()
     }
 
     @JobScope
@@ -43,7 +46,7 @@ class JobFileFixedConfig : JobAbstract() {
         itemReader: ItemReader<Person>,
         @Qualifier("fixedStepProcessor")
         itemProcessor: ItemProcessor<Person, PersonVO>,
-        @Qualifier("fixedStepWriter")
+        @Qualifier("fixedStrepBufferWriterStream")
         itemWriter: ItemWriter<PersonVO>,
         @Qualifier("batchTransactionManager")
         transactionManager: PlatformTransactionManager,

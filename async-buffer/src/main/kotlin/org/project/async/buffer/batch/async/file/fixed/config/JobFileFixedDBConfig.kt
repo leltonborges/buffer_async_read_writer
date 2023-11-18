@@ -42,8 +42,8 @@ class JobFileFixedDBConfig : JobAbstract() {
     @Bean("stepBufferAsyncResourceFixed")
     @JobScope
     fun stepBufferAsyncResource(
-        @Qualifier("fixedStepReaderDB")
-        itemReader: ItemReader<PersonVO>,
+//        @Qualifier("fixedStepReaderDB") itemReader: ItemReader<PersonVO>,
+        @Qualifier("fixedStrepBufferReaderStream") itemReader: ItemReader<PersonVO>,
         @Qualifier("fixedStepProcessorDB")
         itemProcessor: ItemProcessor<PersonVO, Person>,
         @Qualifier("fixedStepWriterDB")

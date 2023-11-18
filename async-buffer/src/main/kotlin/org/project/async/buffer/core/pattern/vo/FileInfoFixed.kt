@@ -6,5 +6,6 @@ data class FileInfoFixed(
     override val fileEncoding: String = "CP037",
     override val filePath: String,
     override val fileName: String = "default",
-    override val fileExtension: String = "txt",
+    override val fileExtension: String = "",
+    override val separatorLine: String = "0x25"
 ) : FileInfo

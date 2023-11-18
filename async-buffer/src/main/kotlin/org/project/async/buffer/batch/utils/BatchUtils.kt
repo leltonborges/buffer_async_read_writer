@@ -31,13 +31,24 @@ object BatchUtils {
         pathRoot: String,
         pathPrefix: String,
         fileName: String,
-        extensionName: String,
+        extensionName: String?,
         timesName: Boolean = false
     ): String {
-        val timeMillis = System.currentTimeMillis()
-        val pathName =
-            if (timesName) "$pathPrefix/$fileName-$timeMillis" else "$pathPrefix/$fileName"
-        return "$pathRoot/$pathName.$extensionName".replace(Regex("[/\\\\]"), Matcher.quoteReplacement(File.separator))
+        val timeSuffix = if (timesName) "-${System.currentTimeMillis()}" else ""
+        val extension = extensionName?.takeIf { it.isNotBlank() }?.let { ".$it" } ?: ""
+
+        return "$pathRoot/$pathPrefix/$fileName$timeSuffix$extension".replace(
+            Regex("[/\\\\]"),
+            Matcher.quoteReplacement(File.separator)
+        )
+    }
+
+    @JvmStatic
+    fun mountDirectoryFile(
+        pathRoot: String,
+        pathPrefix: String
+    ): String {
+        return "$pathRoot/$pathPrefix".replace(Regex("[/\\\\]"), Matcher.quoteReplacement(File.separator))
     }
 
 }

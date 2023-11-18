@@ -4,6 +4,8 @@ import org.project.async.buffer.core.enums.TypeDocument
 import org.project.async.buffer.core.model.buffer.Person
 import org.project.async.buffer.core.repository.buffer.PersonRepository
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -22,7 +24,10 @@ class PersonService(
         } else {
             typesDocument.toSet()
         }
-        return personRepository.findByTypeDocument(types, pageable)
+        val people = personRepository.findByTypeDocument(types, PageRequest.of(0, 10))
+
+        return PageImpl(people.content)
+//        return personRepository.findByTypeDocument(types, pageable)
     }
 
     @Transactional(transactionManager = "bufferTransactionManager")

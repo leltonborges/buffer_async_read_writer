@@ -67,4 +67,4 @@ thread:
 
 job:
   chuck:
-    default: ${CHUCK_DEFAULT:500}
+    default: ${CHUCK_DEFAULT:250}

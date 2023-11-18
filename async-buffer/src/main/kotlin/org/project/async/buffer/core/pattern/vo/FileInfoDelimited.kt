@@ -6,6 +6,8 @@ data class FileInfoDelimited(
     override val fileEncoding: String = "CP037",
     override val filePath: String,
     override val fileName: String = "default",
-    override val fileExtension: String = "txt",
+    override val fileExtension: String = "",
     val fileDelimiter: String = ";",
-) : FileInfo
+    override val separatorLine: String = "0x25"
+) : FileInfo {
+}
